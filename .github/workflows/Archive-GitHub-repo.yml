@@ -30,7 +30,7 @@ jobs:
       - name: Create Directory ${{ env.GIT_ORG }}_${{env.GIT_REPO}}
         id: archive_folder_id
         run: |
-          foldername=${{ env.GIT_ORG }}_${{env.GIT_REPO}}_$(date +"%d-%m-%Y")
+          foldername=${{ env.GIT_ORG }}_${{env.GIT_REPO}}_$(date +"%F-%H-%M-%S")
           echo "::set-output name=archive_folder_name::$foldername"
           mkdir $foldername
           cd $foldername
@@ -83,7 +83,6 @@ jobs:
 
       - name: Package the Archive
         run: |
-          cd ../
           pwd
           ls -ltra
           zip -r ${{ steps.archive_folder_id.outputs.archive_folder_name }}.zip ${{ steps.archive_folder_id.outputs.archive_folder_name }}
