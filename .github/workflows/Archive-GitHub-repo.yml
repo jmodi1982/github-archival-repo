@@ -28,10 +28,10 @@ jobs:
     steps:
 
       # Runs a single command using the runners shell
-      - name: Create Directory ${{ env.GIT_ORG }}_${{GIT_REPO}}
+      - name: Create Directory ${{ env.GIT_ORG }}_${{env.GIT_REPO}}
         run: |
-          mkdir ${{ env.GIT_ORG }}_${{GIT_REPO}}_$now
-          cd ${{ env.GIT_ORG }}_${{GIT_REPO}}_$now
+          mkdir ${{ env.GIT_ORG }}_${{env.GIT_REPO}}_$now
+          cd ${{ env.GIT_ORG }}_${{env.GIT_REPO}}_$now
 
       - name: Create Directory Code and Metadata
         run: |
@@ -42,7 +42,7 @@ jobs:
       - name: Take Repo backup
         run: |
           cd Code
-          git clone https://github.com/${{ env.GIT_ORG }}/${{GIT_REPO}}.git
+          git clone https://github.com/${{ env.GIT_ORG }}/${{env.GIT_REPO}}.git
           ls -ltra
           cd ..
 
