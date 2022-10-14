@@ -60,32 +60,40 @@ jobs:
           cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
           curl --location --request GET 'https://api.github.com/repos/${{ env.GIT_ORG }}/${{env.GIT_REPO}}' --header 'Content-Type: application/json' >> Repo.json
                    
-      # - name: Call Pull Requests Api
-      #   run: cd Metadata
+      - name: Call Pull Requests Api
+        run: |
+          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          curl --location --request GET 'https://api.github.com/repos/${{ env.GIT_ORG }}/${{env.GIT_REPO}}/pulls' --header 'Content-Type: application/json' >> PullRequests.json
 
-      # - name: Call Issues Api
-      #   run: cd Metadata
+      - name: Call Pull Requests Comments Api
+        run: |
+          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          curl --location --request GET 'https://api.github.com/repos/${{ env.GIT_ORG }}/${{env.GIT_REPO}}/pulls/comments' --header 'Content-Type: application/json' >> PullRequestsComments.json
 
-      # - name: Call Pull Requests Comments Api
-      #   run: cd Metadata
+      - name: Call Issues Api
+        run: |
+          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          curl --location --request GET 'https://api.github.com/repos/${{ env.GIT_ORG }}/${{env.GIT_REPO}}/issues' --header 'Content-Type: application/json' >> Issues.json
 
-      # - name: Call Pull Requests Requested Reviewers Api
-      #   run: cd Metadata
+      - name: Call Issue Events Api
+        run: |
+          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          curl --location --request GET 'https://api.github.com/repos/${{ env.GIT_ORG }}/${{env.GIT_REPO}}/issues/events' --header 'Content-Type: application/json' >> IssuesEvents.json
 
-      # - name: Call Issue Events Api
-      #   run: cd Metadata
+      - name: Call Issue Comments Api
+        run: |
+          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          curl --location --request GET 'https://api.github.com/repos/${{ env.GIT_ORG }}/${{env.GIT_REPO}}/issues/comments' --header 'Content-Type: application/json' >> IssuesComments.json
 
-      # - name: Call Issue Comments Api
-      #   run: cd Metadata
+      - name: Call Labels Api
+        run: |
+          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          curl --location --request GET 'https://api.github.com/repos/${{ env.GIT_ORG }}/${{env.GIT_REPO}}/labels' --header 'Content-Type: application/json' >> Labels.json
 
-      # - name: Call Pull Requests Reviews Api
-      #   run: cd Metadata
-
-      # - name: Call Labels Api
-      #   run: cd Metadata
-
-      # - name: Call Milestones Api
-      #   run: cd Metadata
+      - name: Call Milestones Api
+        run: |
+          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          curl --location --request GET 'https://api.github.com/repos/${{ env.GIT_ORG }}/${{env.GIT_REPO}}/milestones' --header 'Content-Type: application/json' >> Milestones.json
 
       - name: Package the Archive
         run: |
