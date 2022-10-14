@@ -30,7 +30,7 @@ jobs:
       - name: Create Directory ${{ env.GIT_ORG }}_${{env.GIT_REPO}}
         id: archive_folder_id
         run: |
-          foldername=${{ env.GIT_ORG }}_${{env.GIT_REPO}}_$now
+          foldername=${{ env.GIT_ORG }}_${{env.GIT_REPO}}_$(date +"%d-%m-%Y")
           echo "::set-output name=archive_folder_name::$foldername"
           mkdir $foldername
           cd $foldername
