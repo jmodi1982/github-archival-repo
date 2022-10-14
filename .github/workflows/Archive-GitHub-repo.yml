@@ -83,7 +83,7 @@ jobs:
 
       - name: Package the Archive
         run: |
-          cd ../../
+          cd ../
           pwd
           ls -ltra
           zip -r ${{ steps.archive_folder_id.outputs.archive_folder_name }}.zip ${{ steps.archive_folder_id.outputs.archive_folder_name }}
