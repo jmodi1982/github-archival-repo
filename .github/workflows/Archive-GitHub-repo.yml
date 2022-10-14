@@ -91,3 +91,10 @@ jobs:
           ls -ltra
           zip -r ${{ steps.archive_folder_id.outputs.archive_folder_name }}.zip ${{ steps.archive_folder_id.outputs.archive_folder_name }}
           ls -ltra
+
+      - name: Upload the Archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ steps.archive_folder_id.outputs.archive_folder_name }}
+          path: ./
+          if-no-files-found: error
