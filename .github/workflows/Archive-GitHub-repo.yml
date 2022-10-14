@@ -33,23 +33,27 @@ jobs:
           foldername=${{ env.GIT_ORG }}_${{env.GIT_REPO}}_$(date +"%F-%H-%M-%S")
           echo "::set-output name=archive_folder_name::$foldername"
           mkdir $foldername
-          cd $foldername
 
       - name: Create Directory Code and Metadata
         run: |
+          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}
           mkdir Code
           mkdir Metadata
 
       - name: Take Repo backup
         run: |
-          cd Code
+          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Code
           git clone https://github.com/${{ env.GIT_ORG }}/${{env.GIT_REPO}}.git
           ls -ltra
           ls -ltra ${{env.GIT_REPO}}
-          cd ..
 
       - name: Start Metadata backup
-        run: cd Metadata
+        run: |
+          echo "starting metadata backup ..."
+          ls -ltra
+          ls -ltra ${{ steps.archive_folder_id.outputs.archive_folder_name }}
+          ls -ltra ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Code
+          ls -ltra ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
 
       # - name: Call Repo Api
       #   run: cd Metadata
