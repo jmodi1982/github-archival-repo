@@ -96,5 +96,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.archive_folder_id.outputs.archive_folder_name }}
-          path: ./
+          path: ./${{ steps.archive_folder_id.outputs.archive_folder_name }}
           if-no-files-found: error
