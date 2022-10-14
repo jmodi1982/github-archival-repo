@@ -55,9 +55,11 @@ jobs:
           ls -ltra ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Code
           ls -ltra ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
 
-      # - name: Call Repo Api
-      #   run: cd Metadata
-
+      - name: Call Repo Api
+        run: |
+          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          curl --location --request GET 'https://api.github.com/repos/${{ env.GIT_ORG }}/${{env.GIT_REPO}}' --header 'Content-Type: application/json' >> Repo.json
+                   
       # - name: Call Pull Requests Api
       #   run: cd Metadata
 
