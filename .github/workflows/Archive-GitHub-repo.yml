@@ -26,7 +26,7 @@ on:
 #   GitHub_Owner: 'octocat'
 #   GitHub_Repo: 'Hello-World'
 
-run-name: Archive ${{ inputs.GitHub_Owner }} by @${{ GitHub_Repo }}
+run-name: Archive ${{ inputs.GitHub_Owner }} by @${{ inputs.GitHub_Repo }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
