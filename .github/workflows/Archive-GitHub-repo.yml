@@ -41,17 +41,18 @@ jobs:
         run: |
           foldername=${{ github.event.inputs.GitHub_Owner }}_${{github.event.inputs.GitHub_Repo}}_$(date +"%F-%H-%M-%S")
           echo "::set-output name=archive_folder_name::$foldername"
+          echo "{archive_folder_name}={$foldername}" >> $GITHUB_ENV
           mkdir $foldername
 
       - name: Create Directory Code and Metadata
         run: |
-          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}
+          cd ${{ env.archive_folder_name }}
           mkdir Code
           mkdir Metadata
 
       - name: Take Repo backup
         run: |
-          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Code
+          cd ${{ env.archive_folder_name }}/Code
           git clone https://github.com/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}.git
           ls -ltra
           ls -ltra ${{github.event.inputs.GitHub_Repo}}
@@ -60,55 +61,55 @@ jobs:
         run: |
           echo "starting metadata backup ..."
           ls -ltra
-          ls -ltra ${{ steps.archive_folder_id.outputs.archive_folder_name }}
-          ls -ltra ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Code
-          ls -ltra ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          ls -ltra ${{ env.archive_folder_name }}
+          ls -ltra ${{ env.archive_folder_name }}/Code
+          ls -ltra ${{ env.archive_folder_name }}/Metadata
 
       - name: Call Repo Api
         run: |
-          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          cd ${{ env.archive_folder_name }}/Metadata
           curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}' --header 'Content-Type: application/json' >> Repo.json
                    
       - name: Call Pull Requests Api
         run: |
-          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          cd ${{ env.archive_folder_name }}/Metadata
           curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/pulls' --header 'Content-Type: application/json' >> PullRequests.json
 
       - name: Call Pull Requests Comments Api
         run: |
-          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          cd ${{ env.archive_folder_name }}/Metadata
           curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/pulls/comments' --header 'Content-Type: application/json' >> PullRequestsComments.json
 
       - name: Call Issues Api
         run: |
-          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          cd ${{ env.archive_folder_name }}/Metadata
           curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/issues' --header 'Content-Type: application/json' >> Issues.json
 
       - name: Call Issue Events Api
         run: |
-          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          cd ${{ env.archive_folder_name }}/Metadata
           curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/issues/events' --header 'Content-Type: application/json' >> IssuesEvents.json
 
       - name: Call Issue Comments Api
         run: |
-          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          cd ${{ env.archive_folder_name }}/Metadata
           curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/issues/comments' --header 'Content-Type: application/json' >> IssuesComments.json
 
       - name: Call Labels Api
         run: |
-          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          cd ${{ env.archive_folder_name }}/Metadata
           curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/labels' --header 'Content-Type: application/json' >> Labels.json
 
       - name: Call Milestones Api
         run: |
-          cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
+          cd ${{ env.archive_folder_name }}/Metadata
           curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/milestones' --header 'Content-Type: application/json' >> Milestones.json
 
       - name: Package the Archive & Upload to archive.org
         run: |
           pwd
           ls -ltra
-          zip -r ${{ steps.archive_folder_id.outputs.archive_folder_name }}.zip ${{ steps.archive_folder_id.outputs.archive_folder_name }}
+          zip -r ${{ env.archive_folder_name }}.zip ${{ env.archive_folder_name }}
           ls -ltra
           curl --location --header 'x-amz-auto-make-bucket:1' \
           --header 'x-archive-meta01-collection:opensource' \
@@ -116,12 +117,12 @@ jobs:
           --header 'x-archive-meta-sponsor:GitHub Archival Utility' \
           --header 'x-archive-meta-language:eng' \
           --header "authorization: LOW WmX5sUovFoNm6XwN:MLP85d78R3bGIsPe" \
-          --upload-file ${{ steps.archive_folder_id.outputs.archive_folder_name }}.zip \
-          http://s3.us.archive.org/github-archives/${{ steps.archive_folder_id.outputs.archive_folder_name }}.zip
+          --upload-file ${{ env.archive_folder_name }}.zip \
+          http://s3.us.archive.org/github-archives/${{ env.archive_folder_name }}.zip
 
       - name: Upload the Archive
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.archive_folder_id.outputs.archive_folder_name }}
-          path: ./${{ steps.archive_folder_id.outputs.archive_folder_name }}.zip
+          name: ${{ env.archive_folder_name }}
+          path: ./${{ env.archive_folder_name }}.zip
           if-no-files-found: error
