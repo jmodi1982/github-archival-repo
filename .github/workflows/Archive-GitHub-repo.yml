@@ -95,12 +95,20 @@ jobs:
           cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
           curl --location --request GET 'https://api.github.com/repos/${{ env.GIT_ORG }}/${{env.GIT_REPO}}/milestones' --header 'Content-Type: application/json' >> Milestones.json
 
-      - name: Package the Archive
+      - name: Package the Archive & Upload to archive.org
         run: |
           pwd
           ls -ltra
           zip -r ${{ steps.archive_folder_id.outputs.archive_folder_name }}.zip ${{ steps.archive_folder_id.outputs.archive_folder_name }}
           ls -ltra
+          curl --location --header 'x-amz-auto-make-bucket:1' \
+          --header 'x-archive-meta01-collection:opensource' \
+          --header 'x-archive-meta-mediatype:Archives' \
+          --header 'x-archive-meta-sponsor:GitHub Archival Utility' \
+          --header 'x-archive-meta-language:eng' \
+          --header "authorization: LOW WmX5sUovFoNm6XwN:MLP85d78R3bGIsPe" \
+          --upload-file ${{ steps.archive_folder_id.outputs.archive_folder_name }}.zip \
+          http://s3.us.archive.org/sam-s3-test-08/${{ steps.archive_folder_id.outputs.archive_folder_name }}.zip
 
       - name: Upload the Archive
         uses: actions/upload-artifact@v3
