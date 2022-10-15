@@ -13,18 +13,18 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs: 
-      GIT_ORG:
+      GitHub_Owner:
         type: string
         required: true
         default: 'octocat'
-      GIT_REPO:
+      GitHub_Repo:
         type: string
         required: true
         default: 'Hello-World'
 
 # env:
-#   GIT_ORG: 'octocat'
-#   GIT_REPO: 'Hello-World'
+#   GitHub_Owner: 'octocat'
+#   GitHub_Repo: 'Hello-World'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -36,10 +36,10 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
 
-      - name: Create Directory ${{ github.event.inputs.GIT_ORG }}_${{github.event.inputs.GIT_REPO}}
+      - name: Create Directory ${{ github.event.inputs.GitHub_Owner }}_${{github.event.inputs.GitHub_Repo}}
         id: archive_folder_id
         run: |
-          foldername=${{ github.event.inputs.GIT_ORG }}_${{github.event.inputs.GIT_REPO}}_$(date +"%F-%H-%M-%S")
+          foldername=${{ github.event.inputs.GitHub_Owner }}_${{github.event.inputs.GitHub_Repo}}_$(date +"%F-%H-%M-%S")
           echo "::set-output name=archive_folder_name::$foldername"
           mkdir $foldername
 
@@ -52,9 +52,9 @@ jobs:
       - name: Take Repo backup
         run: |
           cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Code
-          git clone https://github.com/${{ github.event.inputs.GIT_ORG }}/${{github.event.inputs.GIT_REPO}}.git
+          git clone https://github.com/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}.git
           ls -ltra
-          ls -ltra ${{github.event.inputs.GIT_REPO}}
+          ls -ltra ${{github.event.inputs.GitHub_Repo}}
 
       - name: Start Metadata backup
         run: |
@@ -67,42 +67,42 @@ jobs:
       - name: Call Repo Api
         run: |
           cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
-          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GIT_ORG }}/${{github.event.inputs.GIT_REPO}}' --header 'Content-Type: application/json' >> Repo.json
+          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}' --header 'Content-Type: application/json' >> Repo.json
                    
       - name: Call Pull Requests Api
         run: |
           cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
-          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GIT_ORG }}/${{github.event.inputs.GIT_REPO}}/pulls' --header 'Content-Type: application/json' >> PullRequests.json
+          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/pulls' --header 'Content-Type: application/json' >> PullRequests.json
 
       - name: Call Pull Requests Comments Api
         run: |
           cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
-          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GIT_ORG }}/${{github.event.inputs.GIT_REPO}}/pulls/comments' --header 'Content-Type: application/json' >> PullRequestsComments.json
+          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/pulls/comments' --header 'Content-Type: application/json' >> PullRequestsComments.json
 
       - name: Call Issues Api
         run: |
           cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
-          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GIT_ORG }}/${{github.event.inputs.GIT_REPO}}/issues' --header 'Content-Type: application/json' >> Issues.json
+          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/issues' --header 'Content-Type: application/json' >> Issues.json
 
       - name: Call Issue Events Api
         run: |
           cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
-          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GIT_ORG }}/${{github.event.inputs.GIT_REPO}}/issues/events' --header 'Content-Type: application/json' >> IssuesEvents.json
+          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/issues/events' --header 'Content-Type: application/json' >> IssuesEvents.json
 
       - name: Call Issue Comments Api
         run: |
           cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
-          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GIT_ORG }}/${{github.event.inputs.GIT_REPO}}/issues/comments' --header 'Content-Type: application/json' >> IssuesComments.json
+          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/issues/comments' --header 'Content-Type: application/json' >> IssuesComments.json
 
       - name: Call Labels Api
         run: |
           cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
-          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GIT_ORG }}/${{github.event.inputs.GIT_REPO}}/labels' --header 'Content-Type: application/json' >> Labels.json
+          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/labels' --header 'Content-Type: application/json' >> Labels.json
 
       - name: Call Milestones Api
         run: |
           cd ${{ steps.archive_folder_id.outputs.archive_folder_name }}/Metadata
-          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GIT_ORG }}/${{github.event.inputs.GIT_REPO}}/milestones' --header 'Content-Type: application/json' >> Milestones.json
+          curl --location --request GET 'https://api.github.com/repos/${{ github.event.inputs.GitHub_Owner }}/${{github.event.inputs.GitHub_Repo}}/milestones' --header 'Content-Type: application/json' >> Milestones.json
 
       - name: Package the Archive & Upload to archive.org
         run: |
