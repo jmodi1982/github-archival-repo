@@ -40,8 +40,7 @@ jobs:
         id: archive_folder_id
         run: |
           foldername=${{ github.event.inputs.GitHub_Owner }}_${{github.event.inputs.GitHub_Repo}}_$(date +"%F-%H-%M-%S")
-          echo "::set-output name=archive_folder_name::$foldername"
-          echo "{archive_folder_name}={$foldername}" >> $GITHUB_ENV
+          echo "archive_folder_name=$foldername" >> $GITHUB_ENV
           mkdir $foldername
 
       - name: Create Directory Code and Metadata
